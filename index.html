@@ -1,4 +1,203 @@
 <html>
 
-test 
-</html>
+
+<title>Fun Side Projects!</title>
+
+<head>
+<script>
+const GBMnum = 250;
+const scalefactor = 1;
+  var H = 600;
+  var buffer = (100-H/160-5)/100;
+  var W = H*(233/400);
+  var centerx= W/2;
+  var centery= H*284/810;
+var GBs = ['purple1', 'green1', 'red1', 'pink1', 'orange1', 'blue1', 'white1', 'yellow1','mystery1'];
+var GBList = [];
+var speedList = [];
+var posxList = [];
+var posyList = [];
+var dirxList = [];
+var diryList = [];
+var velxList = [];
+var velyList = [];
+var theta1List = [];
+var theta2List = [];
+var theta3List = [];
+var BG = new Image();
+var overlay = new Image();
+var green1 = new Image();
+var blue1 = new Image();
+var red1 = new Image();
+var orange1= new Image();
+var pink1= new Image();
+var purple1= new Image();
+var white1= new Image();
+var yellow1= new Image();
+var mystery1= new Image();
+
+
+function init() {
+  BG.src = 'gbm.svg';
+  overlay.src = 'overlay.svg';
+  green1.src = 'green1.png';
+  blue1.src = 'blue1.png';
+  red1.src = 'red1.png';
+  orange1.src = 'orange1.png';
+  pink1.src = 'pink1.png';
+  purple1.src = 'purple1.png';
+  white1.src = 'white1.png';
+  yellow1.src = 'yellow1.png';
+  mystery1.src = 'mystery1.png';
+  window.requestAnimationFrame(draw);
+
+for (let i = 0; i < GBMnum; i++) {
+	nonce = Math.random()*2*Math.PI;
+	var R = Math.random()*buffer;
+	var Te = Math.random()*2*Math.PI;
+	GBList.push(GBs[Math.floor(Math.random() * GBs.length)]);
+	speedList.push(Math.random()+.5);
+	posxList.push(centerx+(W/2-green1.width/scalefactor)*R*Math.cos(Te));
+	posyList.push(centery+(W/2-green1.width/scalefactor)*R*Math.sin(Te));
+	dirxList.push(Math.cos(nonce));
+	diryList.push(Math.sin(nonce));
+	velxList.push(Math.cos(nonce));
+	velyList.push(Math.sin(nonce));
+	theta1List.push(0);
+	theta2List.push(0);
+	theta3List.push(0);
+	
+}
+}
+
+function getAng(XX, YY){
+	T = Math.atan2(XX,YY);
+	return T;
+}
+
+function draw() {
+  ctx = document.getElementById('canvas').getContext('2d');
+  ctx.globalCompositeOperation = 'destination-over';
+  ctx.clearRect(0, 0, W, H); // clear canvas
+  ctx.drawImage(overlay, 0, 0, W, H);
+  ctx.save();
+for (let i = 0; i < GBMnum; i++) {
+
+
+  if (Math.sqrt(Math.pow((posxList[i]-(W/2-green1.width/2/scalefactor)),2) + Math.pow(posyList[i]-(centery-green1.width/2/scalefactor),2))>(H/4-1)){
+	posxList[i] = centerx+(W/2-green1.width/scalefactor)*Math.random()*buffer*Math.cos(Math.random()*2*Math.PI);
+	posyList[i] =centery+(W/2-green1.width/scalefactor)*Math.random()*buffer*Math.sin(Math.random()*2*Math.PI);
+   }
+
+  
+  if(Math.sqrt(Math.pow((posxList[i]-(W/2-green1.width/2/scalefactor)),2) + Math.pow(posyList[i]-(centery-green1.width/2/scalefactor),2)) > (W/2-green1.width/scalefactor/2*Math.sqrt(2))){
+	  theta1List[i] = getAng((posyList[i]-(centery-green1.width/2/scalefactor)), (posxList[i]-(W/2-green1.width/2/scalefactor)));
+          theta2List[i] = getAng(diryList[i],dirxList[i]);
+          theta3List[i] = ((Math.PI+2*theta1List[i]-theta2List[i])+2*Math.PI)%(Math.PI*2);
+	  //ctx.translate(velx, vely);
+	if((Math.round(theta1List[i]*180/Math.PI,0))%45==0){
+	   theta3List[i] = theta3List[i]+Math.PI;
+	}
+          dirxList[i] = Math.sin(theta3List[i]);
+          diryList[i] = Math.cos(theta3List[i]);
+	posxList[i]=(W/2-green1.width/2/scalefactor)+(W/2-green1.width/2/scalefactor*Math.sqrt(2))*Math.cos(theta1List[i]);
+	posyList[i]=(centery-green1.width/2/scalefactor)+(W/2-green1.width/2/scalefactor*Math.sqrt(2))*Math.sin(theta1List[i]);
+	velxList[i] = dirxList[i]-velxList[i];
+	velyList[i] = diryList[i]-velyList[i];
+
+ }
+  else{
+	velxList[i] = dirxList[i];
+	velyList[i]= diryList[i];
+  
+  }
+  posxList[i] += velxList[i]*speedList[i];
+  posyList[i] += velyList[i]*speedList[i];
+  ctx.translate(posxList[i], posyList[i]);
+  ctx.drawImage(eval(GBList[i]), 0,0, green1.width/scalefactor,green1.height/scalefactor);
+  ctx.translate(-posxList[i], -posyList[i]);
+}
+  ctx.save();
+
+  ctx.restore();
+
+
+  ctx.restore();
+
+
+  ctx.drawImage(BG, 0, 0, W, H);
+
+
+window.requestAnimationFrame(draw);
+}
+
+init();
+</script>
+<link rel="stylesheet" href="main.css">
+</head>
+
+  <style>
+body {color:#F0FFFF;
+  font-family: Arial, Helvetica, sans-serif;
+background-color: #36454F;
+}
+        td { text-align: center;}
+
+td1 { text-align: center;
+background-color: coral;}
+
+td2 { text-align: center;
+background-color: coral;}
+
+td3 { text-align: center;
+background-color: coral;}
+
+.header {
+font-size:32;
+}
+
+    </style>
+</head>
+
+<br>
+
+
+<center>
+<table border=1 width=85%>
+    <tr><td><b><font size=6>Visual</font></b></td><td width = 150><b><font size=6>Project</font></b></td><td width=500px><b><font size=6>Description</font></b></td><td width=200px><b><font size=6>Tools Used</font></b></td></tr>
+  
+
+<tr><td><a href="https://www.twitter.com/wallofgum"><img height=100px src="wog_icon.png"><img height=75px src="wog_name.png"></a></td>
+</td><td>Wall of Gum - <br>Web App</td><td style="text-align:left"> A work-in-progress "decentralized app" ("dapp") using the Cardano blockchain for the database and source of interactivity. Smart contracts enable users to change state. </td><td style="text-align:left">-Haskell<br>-Docker<br>-Javascript<br>-CSS<br>-Excel</td></tr>
+
+<tr><td><center>
+<canvas id="canvas" height="600" width="466"></canvas></center></td>
+</td><td>Wall of Gum - <br>Gum Ball Machine Animation</td><td style="text-align:left"> A Javascript canvas that renders the collision dynamics of randomized "gum balls" in the browser. Right click-> View source to see implementation.</td><td style="text-align:left">-Javascript<br>-CSS</td></tr>
+
+<tr><td><video  width="466"  controls autoplay muted>
+  <source src="gums.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video></td>
+</td><td>Wall of Gum - <br>"Splatify" Animation</td><td style="text-align:left"> A python program that takes a 256 bit hash (from the block chain) and parses it into a "splat" shape. Animation created by initializing a random "splat" shape and converging to the final shape with an underdamped system amplitude. Resulting shape is an NFT.</td><td style="text-align:left">-Python<br>    -matplotlib</td></tr>
+
+<tr><td><video  width="233"  controls autoplay muted>
+  <source src="magnet4.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video><video  width="233"  controls autoplay muted>
+  <source src="magnet2.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video><BR><video  width="233"  controls autoplay muted>
+  <source src="magnet3.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video><video  width="233"  controls autoplay muted>
+  <source src="magnet1.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video></td><td>Magnetic Dipoles</td><td style="text-align:left">A program for simulating the dynamics of a set of rotating elements containing magnetic dipoles. The program creates an NxN grid of "wheels" each containing "M" spoke elements. Each spoke is assigned a North/South polarity. Each wheel is assigned a random starting position. The simulation proceeds from t=0 and renders how the system reaches equilibirium. </td><td style="text-align:left">-Matplotlib<br>-Numpy</td></tr>
+  
+
+<tr><td><img width=300 src='Projection Cube.png'><img width=300 src='perceptisphere.png'></td><td>Isometric Projections of Two Lines ("Apparent Lengths")</td><td style="text-align:left">I thought of this shape years ago and was fascinating by the fact that, when viewed from the X, Y, and Z axes, rational observers make mutually exclusive conclusions. I made a program to study this perception and found two axes of rotation through which the red and blue lines appear to have identical lengths. I extend this geometric principle to cross-functional cooperation - only through synthesizing all views and achieving an "isometric" perspective, can the truth be correctly assessed.</td><td style="text-align:left">-Matplotlib<br>-Numpy</td></tr>
+
+<tr><td><img width=600 src='topshotbdays.png'></td><td>Rare Serial Number Alert Program</td><td style="text-align:left">Program that monitors when NBATopshot NFT's become available for sale that meet the following criteria:<br>1) Below a price threshold<br>2) Serial Number = Player's Birthday</td><td style="text-align:left">-requests</td></tr>
+
+
+ </table></center></html>
